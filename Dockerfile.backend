@@ -27,8 +27,10 @@ COPY src/backend/ ./src/backend/
 EXPOSE 8000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
+# Use $PORT and the correct API health route (api prefix is /api)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=10 \
+    CMD python -c "import os, urllib.request; urllib.request.urlopen(f'http://127.0.0.1:{os.getenv(\"PORT\", \"8000\")}/api/health')" || exit 1
 
 # Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# IMPORTANT: bind to 0.0.0.0 and use Railway-provided $PORT
+CMD ["sh", "-c", "cd src/backend && uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]

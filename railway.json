@@ -5,7 +5,7 @@
     "dockerfilePath": "Dockerfile.backend"
   },
   "deploy": {
-    "healthcheckPath": "/health",
+    "healthcheckPath": "/api/health",
     "restartPolicy": {
       "policy": "ON_FAILURE"
     }
