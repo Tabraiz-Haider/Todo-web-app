@@ -1,0 +1,17 @@
+{
+  "$schema": "https://railway.app/schema.json",
+  "build": {
+    "builder": "PYTHON",
+    "python": {
+      "entrypoint": "start.sh",
+      "installCommand": "pip install -r requirements.txt"
+    }
+  },
+  "deploy": {
+    "startCommand": "bash start.sh",
+    "healthcheckPath": "/health",
+    "restartPolicy": {
+      "policy": "ON_FAILURE"
+    }
+  }
+}
