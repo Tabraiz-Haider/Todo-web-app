@@ -10,11 +10,36 @@
 .DS_Store
 Thumbs.db
 
-# Documentation
+# Documentation - keep in repo but don't copy to image
 README.md
 LICENSE
 docs/
+DEPLOYMENT.md
+CLAUDE.md
 
-# Root level files that shouldn't be copied to services
-*.md
-*.log
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+tests/
+
+# Poetry
+poetry.lock
+pyproject.toml
+
+# Frontend (not needed for backend)
+src/frontend/
+.next/
+
+# Root scripts (not needed for backend)
+start.sh
+start-all.bat
+todo_cli.py
+
+# Docker files
+docker-compose.yml
+
+# Build outputs
+dist/
+build/
+*.egg-info/

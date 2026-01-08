@@ -1,4 +1,4 @@
-# Backend Dockerfile for FastAPI - Works with Railway build context
+# Backend Dockerfile for FastAPI - Root level for Railway
 FROM python:3.11-slim
 
 # Set working directory
@@ -14,13 +14,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better caching
-COPY requirements.txt .
+# Copy requirements
+COPY src/backend/requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code - works whether build context is root or src/backend
+# Copy application code
 COPY src/backend/ ./src/backend/
 
 # Expose port
