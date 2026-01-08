@@ -12,6 +12,19 @@ eggs/
 .eggs/
 lib/
 lib64/
+
+# NOTE: The patterns above are for Python virtualenv-style folders,
+# but they also match the Next.js source directory `src/frontend/src/lib`.
+# Ensure frontend source files are NOT ignored.
+!src/frontend/src/lib/
+!src/frontend/src/lib/**
+
+# (Keep ignoring Python virtualenv libs elsewhere)
+# If you create a Python venv in-repo, prefer naming it `.venv/`.
+# (Already ignored by common tooling, but not relied on here.)
+
+# Continue default ignores
+lib64/
 parts/
 sdist/
 var/
