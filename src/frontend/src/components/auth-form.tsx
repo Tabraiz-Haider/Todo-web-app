@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,6 +23,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -51,10 +53,14 @@ export function AuthForm({ mode }: AuthFormProps) {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
           }
         );
-        console.log("[Auth] Login response received");
+        console.log("[Auth] Login response received:", response.data);
 
         const { access_token, expires_at } = response.data;
         console.log("[Auth] Token received, length:", access_token?.length);
+
+        if (!access_token) {
+          throw new Error("No token received from server");
+        }
 
         const expiresAt = expires_at
           ? (typeof expires_at === "string" ? expires_at : new Date(expires_at).toISOString())
@@ -64,21 +70,24 @@ export function AuthForm({ mode }: AuthFormProps) {
         saveToken(access_token, expiresAt);
         console.log("[Auth] Token saved to localStorage");
 
-        // Force a complete page reload to dashboard to avoid any React state issues
+        // Verify token was saved
+        const savedToken = localStorage.getItem("todo_token");
+        console.log("[Auth] Token verification, saved token exists:", !!savedToken);
+
+        // Redirect to dashboard
         console.log("[Auth] Redirecting to dashboard...");
-        setTimeout(() => {
-          window.location.href = window.location.origin + "/dashboard";
-        }, 100);
+        router.push("/dashboard");
       }
     } catch (err: any) {
       console.error("[Auth] Error:", err.message || err);
-      const message = err.response?.data?.detail || "Something went wrong";
+      console.error("[Auth] Full error:", err);
+      const message = err.response?.data?.detail || err.message || "Something went wrong";
       setError(message);
     } finally {
       setLoading(false);
       console.log("[Auth] Loading set to false");
     }
-  }, [mode]);
+  }, [mode, router]);
 
   return (
     <form
