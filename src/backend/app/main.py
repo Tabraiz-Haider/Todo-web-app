@@ -30,9 +30,15 @@ def create_app() -> FastAPI:
     )
 
     # CORS middleware
+    # Allow origins from config, with fallbacks for Vercel and localhost
+    allowed_origins = settings.parsed_cors_origins
+    # Ensure we include the Vercel frontend domain
+    if "https://todo-web-app-red-mu.vercel.app" not in allowed_origins:
+        allowed_origins.append("https://todo-web-app-red-mu.vercel.app")
+
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.parsed_cors_origins,
+        allow_origins=allowed_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
