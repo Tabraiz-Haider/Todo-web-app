@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     project_name: str = "Todo Webapp API"
     api_prefix: str = "/api"
 
-    backend_cors_origins: str = "http://localhost:3000"
+    backend_cors_origins: str = "*"  # Allow all origins by default for production ease
 
     database_url: str = os.getenv("DATABASE_URL", "sqlite+pysqlite:///:memory:")
 
