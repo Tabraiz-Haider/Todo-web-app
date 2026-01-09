@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
@@ -36,8 +36,11 @@ def login_for_access_token(
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
     access_token = create_access_token(subject=str(user.id), expires_delta=access_token_expires)
 
+    # Use timezone-aware UTC datetime for expires_at
+    expires_at = datetime.now(timezone.utc) + access_token_expires
+
     return Token(
         access_token=access_token,
         token_type="bearer",
-        expires_at=datetime.utcnow() + access_token_expires,
+        expires_at=expires_at,
     )

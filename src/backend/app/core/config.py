@@ -18,7 +18,7 @@ class Settings(BaseSettings):
 
     jwt_secret_key: str = "change-me"
     jwt_algorithm: str = "HS256"
-    access_token_expire_minutes: int = 60
+    access_token_expire_minutes: int = 1440  # 24 hours
 
     @property
     def parsed_cors_origins(self) -> List[str]:

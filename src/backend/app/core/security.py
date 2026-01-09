@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 
 import bcrypt
@@ -11,7 +11,8 @@ def create_access_token(subject: str, expires_delta: Optional[timedelta] = None)
     if expires_delta is None:
         expires_delta = timedelta(minutes=settings.access_token_expire_minutes)
 
-    expire = datetime.utcnow() + expires_delta
+    # Use timezone-aware UTC datetime
+    expire = datetime.now(timezone.utc) + expires_delta
     to_encode: dict[str, Any] = {"exp": expire, "sub": str(subject)}
     encoded_jwt = jwt.encode(to_encode, settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
     return encoded_jwt
