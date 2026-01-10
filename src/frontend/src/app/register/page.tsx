@@ -1,22 +1,60 @@
+"use client"
+
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { AuthForm } from "@/components/auth-form";
+import { Sparkles, UserPlus } from "lucide-react";
 
 export default function RegisterPage() {
   return (
-    <div className="max-w-md mx-auto bg-white rounded-lg shadow-sm p-8">
-      <div className="space-y-2 text-center">
-        <h2 className="text-2xl font-semibold">Create an account</h2>
-        <p className="text-sm text-slate-500">Join to manage your tasks anywhere.</p>
-      </div>
-      <div className="mt-6">
-        <AuthForm mode="register" />
-      </div>
-      <p className="mt-6 text-center text-sm text-slate-500">
-        Already have an account?{" "}
-        <Link className="font-medium text-slate-900" href="/login">
-          Sign in
-        </Link>
-      </p>
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md"
+      >
+        {/* Header */}
+        <div className="text-center mb-8">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 text-white shadow-lg shadow-indigo-500/30 mb-4"
+          >
+            <UserPlus className="h-8 w-8" />
+          </motion.div>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">
+            Create Account
+          </h1>
+          <p className="text-muted-foreground">
+            Join Todo-App and start organizing your life
+          </p>
+        </div>
+
+        {/* Card */}
+        <div className="glass-card rounded-xl p-8">
+          <AuthForm mode="register" />
+        </div>
+
+        {/* Footer */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="mt-6 text-center"
+        >
+          <p className="text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors"
+            >
+              Sign in
+            </Link>
+          </p>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

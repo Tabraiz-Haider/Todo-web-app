@@ -5,8 +5,17 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
 import { apiClient } from "@/lib/api-client";
 import { saveToken } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+} from "lucide-react";
 
 const schema = z.object({
   email: z.string().email({ message: "Enter a valid email" }),
@@ -70,64 +79,102 @@ export function AuthForm({ mode }: AuthFormProps) {
         saveToken(access_token, expiresAt);
         console.log("[Auth] Token saved to localStorage");
 
-        // Verify token was saved
         const savedToken = localStorage.getItem("todo_token");
         console.log("[Auth] Token verification, saved token exists:", !!savedToken);
 
-        // Redirect to dashboard
-        console.log("[Auth] Redirecting to dashboard...");
         router.push("/dashboard");
       }
     } catch (err: any) {
       console.error("[Auth] Error:", err.message || err);
-      console.error("[Auth] Full error:", err);
       const message = err.response?.data?.detail || err.message || "Something went wrong";
       setError(message);
     } finally {
       setLoading(false);
-      console.log("[Auth] Loading set to false");
     }
   }, [mode, router]);
 
   return (
-    <form
-      onSubmit={(e) => {
-        console.log("[Auth] Form onSubmit triggered");
-        handleSubmit(onSubmit)(e);
-      }}
-      className="space-y-4"
-    >
-      <div>
-        <label className="block text-sm font-medium text-slate-700">Email</label>
-        <input
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
           type="email"
-          className="mt-1 w-full rounded-md border px-3 py-2"
           placeholder="you@example.com"
           {...register("email")}
+          className={errors.email ? "border-destructive" : ""}
         />
-        {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
+        {errors.email && (
+          <motion.p
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive flex items-center gap-1"
+          >
+            <AlertCircle className="h-4 w-4" />
+            {errors.email.message}
+          </motion.p>
+        )}
       </div>
-      <div>
-        <label className="block text-sm font-medium text-slate-700">Password</label>
-        <input
+
+      <div className="space-y-2">
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
           type="password"
-          className="mt-1 w-full rounded-md border px-3 py-2"
           placeholder="••••••••"
           {...register("password")}
+          className={errors.password ? "border-destructive" : ""}
         />
-        {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
+        {errors.password && (
+          <motion.p
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive flex items-center gap-1"
+          >
+            <AlertCircle className="h-4 w-4" />
+            {errors.password.message}
+          </motion.p>
+        )}
       </div>
-      {error && <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
-      {successMessage && (
-        <div className="rounded-md bg-green-50 px-3 py-2 text-sm text-green-700">{successMessage}</div>
+
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-lg bg-destructive/10 border border-destructive/20 px-4 py-3 text-sm text-destructive flex items-start gap-2"
+        >
+          <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+          <span>{error}</span>
+        </motion.div>
       )}
-      <button
+
+      {successMessage && (
+        <motion.div
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-400 flex items-start gap-2"
+        >
+          <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" />
+          <span>{successMessage}</span>
+        </motion.div>
+      )}
+
+      <Button
         type="submit"
         disabled={loading}
-        className="w-full rounded-md bg-slate-900 px-4 py-2 text-white hover:bg-slate-800 disabled:opacity-60"
+        className="w-full h-11 text-base font-medium shadow-lg shadow-indigo-500/30"
       >
-        {loading ? "Please wait..." : mode === "login" ? "Sign in" : "Create account"}
-      </button>
+        {loading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Please wait...
+          </>
+        ) : mode === "login" ? (
+          "Sign in"
+        ) : (
+          "Create account"
+        )}
+      </Button>
     </form>
   );
 }

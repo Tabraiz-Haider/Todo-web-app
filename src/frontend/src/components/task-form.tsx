@@ -4,6 +4,15 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  AlertCircle,
+  Loader2,
+} from "lucide-react";
 
 const taskSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -43,34 +52,72 @@ export function TaskForm({ initialValues, onSubmit, submitLabel = "Save task" }:
 
   return (
     <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-slate-700">Title</label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="task-title">Title</Label>
+        <Input
+          id="task-title"
           type="text"
-          className="mt-1 w-full rounded-md border px-3 py-2"
           placeholder="e.g. Finish report"
           {...register("title")}
+          className={errors.title ? "border-destructive" : ""}
         />
-        {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>}
+        {errors.title && (
+          <motion.p
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive flex items-center gap-1"
+          >
+            <AlertCircle className="h-4 w-4" />
+            {errors.title.message}
+          </motion.p>
+        )}
       </div>
-      <div>
-        <label className="block text-sm font-medium text-slate-700">Description</label>
-        <textarea
-          className="mt-1 w-full rounded-md border px-3 py-2"
+
+      <div className="space-y-2">
+        <Label htmlFor="task-description">Description <span className="text-muted-foreground">(optional)</span></Label>
+        <Textarea
+          id="task-description"
+          placeholder="Optional details..."
           rows={3}
-          placeholder="Optional details"
           {...register("description")}
         />
-        {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>}
+        {errors.description && (
+          <motion.p
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive flex items-center gap-1"
+          >
+            <AlertCircle className="h-4 w-4" />
+            {errors.description.message}
+          </motion.p>
+        )}
       </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      <button
+
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-lg bg-destructive/10 border border-destructive/20 px-4 py-3 text-sm text-destructive flex items-start gap-2"
+        >
+          <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+          <span>{error}</span>
+        </motion.div>
+      )}
+
+      <Button
         type="submit"
         disabled={isSubmitting}
-        className="rounded-md bg-slate-900 px-4 py-2 text-white hover:bg-slate-800 disabled:opacity-60"
+        className="w-full"
       >
-        {isSubmitting ? "Saving..." : submitLabel}
-      </button>
+        {isSubmitting ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Saving...
+          </>
+        ) : (
+          submitLabel
+        )}
+      </Button>
     </form>
   );
 }

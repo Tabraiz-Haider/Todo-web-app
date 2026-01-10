@@ -9,6 +9,7 @@ export default function LogoutPage() {
   useEffect(() => {
     clearToken();
     router.push("/login");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
