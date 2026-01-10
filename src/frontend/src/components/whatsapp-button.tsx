@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MessageCircle } from "lucide-react";
 
 export function WhatsAppButton() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -34,7 +33,19 @@ export function WhatsAppButton() {
 
       {/* Main button */}
       <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-2xl shadow-[#25D366]/50 backdrop-blur-xl border border-white/20 transition-all hover:scale-110 active:scale-95 group-hover:shadow-[#25D366]/70">
-        <MessageCircle className="h-7 w-7" strokeWidth={2.5} />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+        </svg>
       </div>
     </a>
   );
